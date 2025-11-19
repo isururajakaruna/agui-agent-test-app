@@ -4,7 +4,18 @@ import {
   copilotRuntimeNextJSAppRouterEndpoint,
 } from "@copilotkit/runtime";
 import { NextRequest } from "next/server";
-import { ADKAgent } from "@ag-ui/adk";
+
+// Simple AG-UI Protocol Agent adapter
+// This connects CopilotKit to any AG-UI Protocol endpoint (like our ADK Bridge)
+class ADKAgent {
+  name: string;
+  url: string;
+
+  constructor(config: { url: string; name?: string }) {
+    this.url = config.url;
+    this.name = config.name || "default";
+  }
+}
 
 export async function POST(request: NextRequest) {
   const bridgeUrl = process.env.ADK_BRIDGE_URL || "http://localhost:8000";

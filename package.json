@@ -11,7 +11,6 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@ag-ui/adk": "workspace:*",
     "@copilotkit/react-core": "^1.10.6",
     "@copilotkit/react-ui": "^1.10.6",
     "@copilotkit/runtime": "^1.10.6",

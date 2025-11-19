@@ -4,9 +4,8 @@ Quick setup and run instructions for the Agent Testing UI application.
 
 ## 📋 Prerequisites
 
-- **Node.js 18+** ([Download](https://nodejs.org/))
-- **pnpm** (will be auto-installed if missing)
-- **ADK Bridge** running on port 8000
+- **Node.js 18+** with npm ([Download](https://nodejs.org/))
+- **ADK Bridge** running on port 8000 ([Get it here](https://github.com/isururajakaruna/agui-adk-bridge))
 
 ---
 

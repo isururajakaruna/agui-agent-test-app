@@ -30,13 +30,8 @@ fi
 
 echo "✅ Node.js version: $(node -v)"
 
-# Check for pnpm (this is a pnpm workspace)
-if ! command -v pnpm &> /dev/null; then
-    echo "⚠️  pnpm not found. Installing pnpm globally..."
-    npm install -g pnpm
-fi
-
-echo "✅ pnpm version: $(pnpm -v)"
+# Check for npm
+echo "✅ npm version: $(npm -v)"
 echo ""
 
 # Create .env.local if it doesn't exist
@@ -67,9 +62,8 @@ echo "📦 Installing dependencies..."
 echo "   This may take a few minutes..."
 echo ""
 
-# Navigate to workspace root and install
-cd ../..
-pnpm install --filter agent-ui
+# Install dependencies
+npm install
 
 echo ""
 echo "✅ Setup complete!"
