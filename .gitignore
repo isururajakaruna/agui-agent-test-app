@@ -5,6 +5,11 @@
 /.pnp
 .pnp.js
 
+# lock files (not needed for standalone repo)
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
 # testing
 /coverage
 

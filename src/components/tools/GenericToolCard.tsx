@@ -97,11 +97,11 @@ export default function GenericToolCard({
                 </Badge>
                 <Info className="w-3 h-3 text-gray-400 flex-shrink-0" />
               </div>
-              {args && Object.keys(args).length > 0 && (
-                <p className="text-xs text-muted-foreground truncate mt-1">
-                  {Object.keys(args).length} parameter{Object.keys(args).length > 1 ? "s" : ""}
-                </p>
-              )}
+            {args && Object.keys(args).length > 0 && (
+              <p className="text-xs text-muted-foreground truncate mt-1">
+                {Object.keys(args).length} parameter{Object.keys(args).length > 1 ? "s" : ""}
+              </p>
+            )}
             </div>
           </div>
           <ChevronRight className="w-4 h-4 text-gray-400" />

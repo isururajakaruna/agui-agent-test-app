@@ -52,20 +52,6 @@ fi
 # Default to 3005 if not set
 PORT=${PORT:-3005}
 
-# Check if port 8000 is available (ADK Bridge should be running)
-if ! lsof -Pi :8000 -sTCP:LISTEN -t >/dev/null 2>&1; then
-    echo "⚠️  Warning: ADK Bridge doesn't appear to be running on port 8000"
-    echo "   The chat will not work without the bridge."
-    echo "   Please start the ADK Bridge first."
-    echo ""
-    read -p "Continue anyway? (y/N): " -n 1 -r
-    echo ""
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        echo "❌ Aborted"
-        exit 1
-    fi
-fi
-
 # Check if configured port is already in use
 if lsof -Pi :$PORT -sTCP:LISTEN -t >/dev/null 2>&1; then
     echo "⚠️  Port $PORT is already in use. Killing existing process..."
@@ -74,10 +60,6 @@ if lsof -Pi :$PORT -sTCP:LISTEN -t >/dev/null 2>&1; then
 fi
 
 echo "🌐 Starting server on http://localhost:$PORT"
-echo "📡 Connecting to ADK Bridge at http://localhost:8000"
-echo ""
-echo "📝 Configuration:"
-echo "   - Port: $PORT (from .env.local)"
 echo ""
 echo "Press Ctrl+C to stop the server"
 echo ""
