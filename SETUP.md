@@ -53,7 +53,7 @@ npm run dev
 
 ## 🌐 Access Points
 
-- **Agent UI**: http://localhost:3005
+- **Agent UI**: http://localhost:${PORT} (default: 3005, configurable in `.env.local`)
 - **ADK Bridge**: http://localhost:8000 (must be running)
 
 ---
@@ -82,10 +82,16 @@ NEXT_PUBLIC_ENABLE_DEBUG=false
 
 ## 🐛 Troubleshooting
 
-### Port 3005 already in use
+### Port already in use
 ```bash
+# Check what's using the port (default 3005)
+lsof -ti:3005
+
 # Kill existing process
 lsof -ti:3005 | xargs kill -9
+
+# Or change PORT in .env.local
+nano .env.local  # Change PORT=3005 to PORT=3006
 ```
 
 ### ADK Bridge not running
