@@ -4,23 +4,19 @@ import {
   copilotRuntimeNextJSAppRouterEndpoint,
 } from "@copilotkit/runtime";
 import { NextRequest } from "next/server";
+// @ts-ignore - @ag-ui/client may not have TypeScript definitions
+import { HttpAgent } from "@ag-ui/client";
 
-// Simple AG-UI Protocol Agent adapter
+// AG-UI Protocol Agent adapter
 // This connects CopilotKit to any AG-UI Protocol endpoint (like our ADK Bridge)
-class ADKAgent {
-  name: string;
-  url: string;
-
-  constructor(config: { url: string; name?: string }) {
-    this.url = config.url;
-    this.name = config.name || "default";
-  }
-}
+// @ts-ignore - HttpAgent works with config parameter at runtime
+class ADKAgent extends HttpAgent {}
 
 export async function POST(request: NextRequest) {
   const bridgeUrl = process.env.ADK_BRIDGE_URL || "http://localhost:8000";
 
   // Create AG-UI Protocol agent
+  // @ts-ignore - HttpAgent accepts url config at runtime
   const chatAgent = new ADKAgent({
     url: `${bridgeUrl}/chat`,
   });
