@@ -44,6 +44,14 @@ EOF
     echo "✅ Created .env.local"
 fi
 
+# Load PORT from .env.local
+if [ -f ".env.local" ]; then
+    export $(grep -v '^#' .env.local | grep PORT | xargs)
+fi
+
+# Default to 3005 if not set
+PORT=${PORT:-3005}
+
 # Check if port 8000 is available (ADK Bridge should be running)
 if ! lsof -Pi :8000 -sTCP:LISTEN -t >/dev/null 2>&1; then
     echo "⚠️  Warning: ADK Bridge doesn't appear to be running on port 8000"
@@ -58,19 +66,22 @@ if ! lsof -Pi :8000 -sTCP:LISTEN -t >/dev/null 2>&1; then
     fi
 fi
 
-# Check if port 3005 is already in use
-if lsof -Pi :3005 -sTCP:LISTEN -t >/dev/null 2>&1; then
-    echo "⚠️  Port 3005 is already in use. Killing existing process..."
-    lsof -ti:3005 | xargs kill -9 2>/dev/null || true
+# Check if configured port is already in use
+if lsof -Pi :$PORT -sTCP:LISTEN -t >/dev/null 2>&1; then
+    echo "⚠️  Port $PORT is already in use. Killing existing process..."
+    lsof -ti:$PORT | xargs kill -9 2>/dev/null || true
     sleep 1
 fi
 
-echo "🌐 Starting server on http://localhost:3005"
+echo "🌐 Starting server on http://localhost:$PORT"
 echo "📡 Connecting to ADK Bridge at http://localhost:8000"
+echo ""
+echo "📝 Configuration:"
+echo "   - Port: $PORT (from .env.local)"
 echo ""
 echo "Press Ctrl+C to stop the server"
 echo ""
 
-# Start the development server
+# Start the development server (Next.js will read PORT from environment)
 npm run dev
 
