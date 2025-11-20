@@ -7,6 +7,7 @@ import Header from "@/components/ui/Header";
 import GenericToolCard from "@/components/tools/GenericToolCard";
 import ThinkingCard from "@/components/cards/ThinkingCard";
 import ThinkingIndicator from "@/components/chat/ThinkingIndicator";
+import CustomAssistantMessage from "@/components/chat/CustomAssistantMessage";
 
 // Note: "transfer_to_agent" is omitted - it's an internal ADK routing mechanism
 
@@ -199,6 +200,7 @@ function ChatWithMetadata() {
                 title: "Agent Testing UI",
                 initial: "",
               }}
+              AssistantMessage={CustomAssistantMessage}
             />
             
             {/* Typing Indicator - shows when agent is working */}
