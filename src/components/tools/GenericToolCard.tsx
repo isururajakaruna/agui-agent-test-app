@@ -93,7 +93,7 @@ export default function GenericToolCard({
                       : "info"
                   }
                 >
-                  {status}
+                  tool
                 </Badge>
                 <Info className="w-3 h-3 text-gray-400 flex-shrink-0" />
               </div>

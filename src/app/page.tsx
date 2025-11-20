@@ -1,7 +1,7 @@
 "use client";
 
 import { CopilotKit } from "@copilotkit/react-core";
-import ChatInterface from "@/components/chat/ChatInterface";
+import EnhancedChatInterface from "@/components/chat/EnhancedChatInterface";
 
 export default function Home() {
   return (
@@ -11,7 +11,7 @@ export default function Home() {
         agent="chat_agent"
         showDevConsole={process.env.NEXT_PUBLIC_SHOW_DEV_CONSOLE === "true"}
       >
-        <ChatInterface />
+        <EnhancedChatInterface />
       </CopilotKit>
     </main>
   );

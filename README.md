@@ -1,10 +1,11 @@
 # 🤖 Agent UI - Insights Co-pilot
 
-A beautiful, modern Next.js chat interface for Google Agent Engine, powered by CopilotKit and the AG-UI Protocol.
+A beautiful, modern Next.js chat interface for Google Agent Engine, powered by CopilotKit with **prototype modification** for extended thinking and session statistics display.
 
 ![Next.js](https://img.shields.io/badge/Next.js-14.2-black?logo=next.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue?logo=typescript)
 ![CopilotKit](https://img.shields.io/badge/CopilotKit-1.10.6-purple)
+![AG-UI Protocol](https://img.shields.io/badge/AG--UI-Protocol-orange)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38bdf8?logo=tailwind-css)
 
 ---
@@ -14,7 +15,10 @@ A beautiful, modern Next.js chat interface for Google Agent Engine, powered by C
 - 🎨 **Beautiful UI**: Modern, gradient-based design with dark mode support
 - 💬 **Real-time Streaming**: SSE-based streaming responses from Agent Engine
 - 🔧 **Custom Tool Renderers**: Rich UI for tool calls (agent transfers, market summaries)
-- 🎯 **AG-UI Protocol**: Full support for all event types
+- 🎯 **AG-UI Protocol**: Full support for all event types via @ag-ui/client
+- 🧠 **Thinking Steps**: Displays extended thinking with token counts (via prototype modification)
+- 📊 **Session Stats**: Shows total tokens, tool calls, and duration
+- ⚡ **Event Transformation**: Intercepts ACTIVITY_SNAPSHOT events and transforms them to CopilotKit-compatible format
 - 📱 **Responsive**: Works seamlessly on desktop and mobile
 - ⚡ **Fast**: Optimized with Next.js 14 App Router
 - 🎭 **Animations**: Smooth transitions and micro-interactions
@@ -23,17 +27,54 @@ A beautiful, modern Next.js chat interface for Google Agent Engine, powered by C
 
 ## 🏗️ Architecture
 
+### ⚠️ **Prototype Modification Approach**
+
+This app uses **prototype modification** to extend CopilotKit's functionality and support AG-UI Protocol `ACTIVITY_SNAPSHOT` events (thinking steps, session stats).
+
+**See detailed documentation:**
+- [`COPILOTKIT_PATCH.md`](./COPILOTKIT_PATCH.md) - How the patch works
+- [`PROTOTYPE_IMPLEMENTATION.md`](./PROTOTYPE_IMPLEMENTATION.md) - Testing and maintenance
+
+### How It Works
+
+This app uses **@ag-ui/client** for protocol translation and **runtime event transformation** to capture thinking steps and session statistics that CopilotKit normally filters out:
+
 ```
-User Browser
-    ↓
-Next.js App (Port 3005)
-    ↓
-API Route (/api/copilotkit)
-    ↓
-ADK Bridge (Port 8000)
-    ↓
-Google Agent Engine
+┌─────────────────────────────────────┐
+│  React Frontend (CopilotKit UI)    │
+│  - CopilotChat                      │
+│  - Tool renderers                   │
+│  - Thinking sidebar ⭐ NEW          │
+└──────────┬────────────┬─────────────┘
+           │            │
+     /api/copilotkit   /api/metadata ⭐
+           │            │
+┌──────────▼────────────▼─────────────┐
+│  Next.js API Routes                 │
+│  ├─ @ag-ui/client (HttpAgent)      │
+│  └─ Metadata proxy                  │
+└──────────┬────────────┬─────────────┘
+           │            │
+      POST /chat    GET /metadata ⭐
+           │            │
+┌──────────▼────────────▼─────────────┐
+│  Python Bridge (Port 8000)          │
+│  ├─ Streams AG-UI Protocol          │
+│  └─ Stores CUSTOM events ⭐         │
+└──────────┬──────────────────────────┘
+           │
+┌──────────▼──────────────────────────┐
+│  Google Agent Engine (Vertex AI)    │
+└─────────────────────────────────────┘
 ```
+
+**Key Innovation:**
+- ✅ CopilotKit shows text + tool calls (via `/api/copilotkit`)
+- ✅ Sidebar shows thinking + stats (via `/api/metadata`)
+- ✅ Same thread ID for both connections
+- ✅ Bypasses CopilotKit's CUSTOM event filtering
+
+See [BRIDGE_LEVEL_METADATA.md](./BRIDGE_LEVEL_METADATA.md) for details.
 
 ---
 
