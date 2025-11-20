@@ -174,7 +174,7 @@ function ChatWithMetadata() {
 
   return (
     <div className="flex flex-col h-screen w-full">
-      <Header />
+      <Header sessionId={threadId} />
       <div className="flex-1 overflow-hidden p-4">
         <div className="h-full max-w-6xl mx-auto flex gap-4">
           {/* Main Chat Area */}
@@ -203,8 +203,8 @@ function ChatWithMetadata() {
             
             {/* Typing Indicator - shows when agent is working */}
             {isAgentWorking && (
-              <div className="absolute bottom-28 left-4 z-10 animate-fade-in pointer-events-none">
-                <ThinkingIndicator message="Processing..." />
+              <div className="absolute bottom-28 left-8 z-10 animate-fade-in pointer-events-none">
+                <ThinkingIndicator message="Processing" />
               </div>
             )}
           </div>

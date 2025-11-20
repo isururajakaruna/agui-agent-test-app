@@ -9,6 +9,7 @@ const nextConfig = {
   },
   env: {
     ADK_BRIDGE_URL: process.env.ADK_BRIDGE_URL || "http://localhost:8000",
+    NEXT_PUBLIC_ADK_BRIDGE_URL: process.env.ADK_BRIDGE_URL || "http://localhost:8000",
   },
 };
 

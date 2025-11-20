@@ -8,7 +8,7 @@ interface ThinkingIndicatorProps {
 
 export default function ThinkingIndicator({
   className,
-  message = "Thinking...",
+  message = "Thinking",
 }: ThinkingIndicatorProps) {
   return (
     <div
@@ -17,6 +17,9 @@ export default function ThinkingIndicator({
         className
       )}
     >
+      <span className="text-sm text-gray-600 dark:text-gray-400">
+        {message}
+      </span>
       <div className="flex gap-1">
         <span
           className="w-2 h-2 rounded-full bg-gray-400 dark:bg-gray-500 animate-pulse"
@@ -31,9 +34,6 @@ export default function ThinkingIndicator({
           style={{ animationDelay: "300ms" }}
         />
       </div>
-      <span className="text-sm text-gray-600 dark:text-gray-400">
-        {message}
-      </span>
     </div>
   );
 }
