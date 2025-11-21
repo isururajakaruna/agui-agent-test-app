@@ -59,7 +59,7 @@ export default function CustomAssistantMessage(props: AssistantMessageProps) {
       <div className="flex items-start gap-3">
         {avatar}
         <div className={messageStyles}>
-          {hasTextContent && <Markdown content={message.content} components={markdownComponents} />}
+          {hasTextContent && <Markdown content={message.content || ""} components={markdownComponents} />}
           {isLoading && icons.spinnerIcon}
         </div>
       </div>
