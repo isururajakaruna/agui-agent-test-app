@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# Agent UI Run Script - Production Mode
-# This script builds (if needed) and starts the Agent Testing UI in production mode
+# Agent UI Run Script
+# This script starts the Agent Testing UI application
 
 set -e  # Exit on error
 
-echo "🚀 Agent Testing UI - Starting Application (Production)"
-echo "======================================================="
+echo "🚀 Agent Testing UI - Starting Application"
+echo "=========================================="
 echo ""
 
 # Check if we're in the right directory
@@ -44,13 +44,12 @@ EOF
     echo "✅ Created .env.local"
 fi
 
-# Load ALL environment variables from .env.local
+# Load PORT from .env.local
 if [ -f ".env.local" ]; then
-    echo "📝 Loading configuration from .env.local"
-    export $(grep -v '^#' .env.local | xargs)
+    export $(grep -v '^#' .env.local | grep PORT | xargs)
 fi
 
-# Default to 3005 if PORT not set
+# Default to 3005 if not set
 PORT=${PORT:-3005}
 
 # Check if configured port is already in use
@@ -60,26 +59,11 @@ if lsof -Pi :$PORT -sTCP:LISTEN -t >/dev/null 2>&1; then
     sleep 1
 fi
 
-# Check if .next build directory exists
-if [ ! -d ".next" ]; then
-    echo "📦 No production build found. Building application..."
-    echo ""
-    npm run build
-    echo ""
-    echo "✅ Build complete"
-    echo ""
-else
-    echo "✅ Production build found"
-    echo ""
-fi
-
-echo "🌐 Starting production server on http://localhost:$PORT"
-echo ""
-echo "💡 Tip: Use ./run-dev.sh for development mode with hot reload"
+echo "🌐 Starting server on http://localhost:$PORT"
 echo ""
 echo "Press Ctrl+C to stop the server"
 echo ""
 
-# Start the production server (all env vars from .env.local are already exported)
-npm start
+# Start the development server (Next.js will read PORT from environment)
+npm run dev
 
