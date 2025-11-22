@@ -60,16 +60,16 @@ if lsof -Pi :$PORT -sTCP:LISTEN -t >/dev/null 2>&1; then
     sleep 1
 fi
 
-# Check if .next build directory exists
-if [ ! -d ".next" ]; then
-    echo "📦 No production build found. Building application..."
+# Check if valid production build exists (check for BUILD_ID file)
+if [ ! -f ".next/BUILD_ID" ]; then
+    echo "📦 No valid production build found. Building application..."
     echo ""
     npm run build
     echo ""
     echo "✅ Build complete"
     echo ""
 else
-    echo "✅ Production build found"
+    echo "✅ Valid production build found"
     echo ""
 fi
 
