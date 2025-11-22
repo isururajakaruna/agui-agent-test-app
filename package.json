@@ -16,12 +16,16 @@
     "@copilotkit/react-ui": "^1.10.6",
     "@copilotkit/runtime": "^1.10.6",
     "@copilotkit/runtime-client-gql": "^1.10.6",
+    "@types/uuid": "^10.0.0",
     "clsx": "^2.1.0",
     "lucide-react": "^0.344.0",
     "next": "^14.2.0",
     "react": "^18.3.0",
     "react-dom": "^18.3.0",
-    "tailwind-merge": "^2.2.0"
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1",
+    "tailwind-merge": "^2.2.0",
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",

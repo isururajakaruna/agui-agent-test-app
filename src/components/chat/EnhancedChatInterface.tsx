@@ -8,6 +8,7 @@ import GenericToolCard from "@/components/tools/GenericToolCard";
 import ThinkingCard from "@/components/cards/ThinkingCard";
 import ThinkingIndicator from "@/components/chat/ThinkingIndicator";
 import CustomAssistantMessage from "@/components/chat/CustomAssistantMessage";
+import { useSavedConversations } from "@/contexts/SavedConversationsContext";
 
 // Note: "transfer_to_agent" is omitted - it's an internal ADK routing mechanism
 
@@ -18,16 +19,18 @@ function ChatWithMetadata() {
   const [isAgentWorking, setIsAgentWorking] = useState(false);
   const [conversationStarted, setConversationStarted] = useState(false);
   const workingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const { setCurrentConversationId, currentView } = useSavedConversations();
 
-  // Extract thread ID from context
+  // Extract thread ID from context and set it globally
   useEffect(() => {
     // @ts-ignore - CopilotKit context structure may vary
     const id = context?.threadId || context?.chatId || null;
     if (id && id !== threadId) {
       console.log('[EnhancedChatInterface] Thread ID detected:', id);
       setThreadId(id);
+      setCurrentConversationId(id); // Set in global context for SaveButton
     }
-  }, [context, threadId]);
+  }, [context, threadId, setCurrentConversationId]);
 
   // Track agent working state from CopilotKit context
   useEffect(() => {
@@ -175,7 +178,7 @@ function ChatWithMetadata() {
 
   return (
     <div className="flex flex-col h-screen w-full">
-      <Header sessionId={threadId} />
+      <Header sessionId={threadId} conversationId={threadId} />
       <div className="flex-1 overflow-hidden p-4">
         <div className="h-full max-w-6xl mx-auto flex gap-4">
           {/* Main Chat Area */}

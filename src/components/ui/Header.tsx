@@ -1,14 +1,18 @@
 "use client";
 
 import React, { useState } from "react";
-import { Bot } from "lucide-react";
+import { Bot, Menu } from "lucide-react";
+import { useSavedConversations } from "@/contexts/SavedConversationsContext";
+import { SaveConversationButton } from "@/components/conversations/SaveConversationButton";
 
 interface HeaderProps {
   sessionId?: string | null;
+  conversationId?: string | null;
 }
 
-export default function Header({ sessionId }: HeaderProps) {
+export default function Header({ sessionId, conversationId }: HeaderProps) {
   const [showTooltip, setShowTooltip] = useState(false);
+  const { setSidebarOpen, currentView } = useSavedConversations();
   
   // Get connection details from environment (dynamically configured)
   const bridgeUrl = process.env.NEXT_PUBLIC_ADK_BRIDGE_URL || process.env.ADK_BRIDGE_URL || "http://localhost:8000";
@@ -27,10 +31,22 @@ export default function Header({ sessionId }: HeaderProps) {
     // Fallback to defaults if URL parsing fails
     console.warn('Using default bridge connection details');
   }
+  
   return (
     <header className="border-b bg-white dark:bg-gray-900 shadow-sm">
       <div className="px-6 py-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
+          {/* Menu button (only show in chat view) */}
+          {currentView === 'chat' && (
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              title="Saved conversations"
+            >
+              <Menu className="w-5 h-5 text-gray-700 dark:text-gray-300" />
+            </button>
+          )}
+          
           <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg">
             <Bot className="w-5 h-5 text-gray-700 dark:text-gray-300" />
           </div>
@@ -41,10 +57,11 @@ export default function Header({ sessionId }: HeaderProps) {
           </div>
         </div>
         <div className="flex items-center gap-4">
-          {/* Session ID with copy button */}
-          {sessionId && (
-            <div className="flex items-center gap-2 text-xs text-gray-500 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">
-              <span>Session: {sessionId.slice(0, 8)}</span>
+          {/* Session ID with copy button (only show in chat view) */}
+          {currentView === 'chat' && sessionId && (
+            <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-lg">
+              <span className="font-mono hidden sm:inline">{sessionId}</span>
+              <span className="font-mono inline sm:hidden">{sessionId.slice(0, 12)}...</span>
               <button
                 onClick={() => {
                   navigator.clipboard.writeText(sessionId);
@@ -58,6 +75,11 @@ export default function Header({ sessionId }: HeaderProps) {
                 </svg>
               </button>
             </div>
+          )}
+          
+          {/* Save button (only show in chat view) */}
+          {currentView === 'chat' && conversationId && (
+            <SaveConversationButton conversationId={conversationId} />
           )}
           {/* Connected status with tooltip */}
           <div 
