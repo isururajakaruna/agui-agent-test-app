@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useSavedConversations } from "@/contexts/SavedConversationsContext";
 import { useToast } from "@/contexts/ToastContext";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import SavedChatCard from "./SavedChatCard";
 import { Search, Loader2, Download, X, CheckSquare } from "lucide-react";
 
@@ -16,6 +17,7 @@ export default function SavedChatsList() {
   const [isCombining, setIsCombining] = useState(false);
   const [isSelectionMode, setIsSelectionMode] = useState(false);
   const [isLoading, setIsLoading] = useState(true); // Add loading state
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
   useEffect(() => {
     const loadConversations = async () => {
@@ -68,12 +70,17 @@ export default function SavedChatsList() {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this conversation? This action cannot be undone.')) {
-      return;
-    }
-    
+  const handleDeleteClick = (id: string) => {
+    setDeleteConfirmId(id);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!deleteConfirmId) return;
+
+    const id = deleteConfirmId;
+    setDeleteConfirmId(null);
     setLoadingId(id);
+    
     try {
       const response = await fetch(`/api/conversations/saved/${id}`, {
         method: 'DELETE',
@@ -93,6 +100,10 @@ export default function SavedChatsList() {
     } finally {
       setLoadingId(null);
     }
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteConfirmId(null);
   };
 
   const toggleSelection = (id: string) => {
@@ -331,7 +342,7 @@ export default function SavedChatsList() {
                 isSelected={selectedIds.has(conversation.id)}
                 onView={() => handleView(conversation.id)}
                 onExport={() => handleExport(conversation.id)}
-                onDelete={() => handleDelete(conversation.id)}
+                onDelete={() => handleDeleteClick(conversation.id)}
                 onToggleSelect={isSelectionMode ? () => toggleSelection(conversation.id) : undefined}
               />
             ))}
@@ -352,6 +363,18 @@ export default function SavedChatsList() {
         )}
       </div>
       )}
+
+      {/* Delete Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={deleteConfirmId !== null}
+        title="Delete Conversation"
+        message="Are you sure you want to delete this conversation? This action cannot be undone."
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        variant="danger"
+        onConfirm={handleDeleteConfirm}
+        onCancel={handleDeleteCancel}
+      />
     </div>
   );
 }
