@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Bot } from "lucide-react";
+import { Bot, RefreshCw } from "lucide-react";
 import { useSavedConversations } from "@/contexts/SavedConversationsContext";
 import SaveConversationButton from "@/components/conversations/SaveConversationButton";
 
@@ -45,6 +45,17 @@ export default function Header({ sessionId }: HeaderProps) {
           </div>
         </div>
         <div className="flex items-center gap-4">
+          {/* Refresh button (only show in chat view) */}
+          {currentView === 'chat' && (
+            <button
+              onClick={() => window.location.reload()}
+              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+              title="Start new conversation"
+            >
+              <RefreshCw className="w-4 h-4 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100" />
+            </button>
+          )}
+          
           {/* Session ID with copy button (only show in chat view with active session) */}
           {currentView === 'chat' && sessionId && (
             <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-lg">

@@ -209,7 +209,7 @@ export default function SavedChatsList() {
               className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
             >
               <CheckSquare size={18} />
-              <span>Select</span>
+              <span>Combine to Eval Set</span>
             </button>
           )}
         </div>
@@ -232,7 +232,13 @@ export default function SavedChatsList() {
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as 'date-desc' | 'date-asc')}
-            className="px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="px-4 py-2 pr-10 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none cursor-pointer"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
+              backgroundPosition: 'right 0.5rem center',
+              backgroundRepeat: 'no-repeat',
+              backgroundSize: '1.5em 1.5em',
+            }}
           >
             <option value="date-desc">Newest First</option>
             <option value="date-asc">Oldest First</option>

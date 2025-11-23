@@ -54,7 +54,7 @@ export default function SavedChatCard({
   };
 
   return (
-    <div className={`group relative bg-white dark:bg-gray-800 rounded-lg border p-4 hover:shadow-lg transition-all ${
+    <div className={`group relative bg-white dark:bg-gray-800 rounded-lg border p-4 hover:shadow-lg transition-all flex flex-col ${
       isSelected 
         ? 'border-blue-500 dark:border-blue-500 ring-2 ring-blue-500/50' 
         : 'border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600'
@@ -102,13 +102,13 @@ export default function SavedChatCard({
         </div>
       </div>
 
-      {/* Preview */}
-      <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-3 mb-4">
+      {/* Preview - flex-grow pushes buttons down */}
+      <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-3 mb-4 flex-grow">
         {preview || 'No preview available'}
       </p>
 
-      {/* Action Buttons (always visible) */}
-      <div className="flex gap-2">
+      {/* Action Buttons (always visible, at bottom) */}
+      <div className="flex gap-2 mt-auto">
         <button
           onClick={(e) => {
             e.stopPropagation();

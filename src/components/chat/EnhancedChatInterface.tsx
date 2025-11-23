@@ -179,11 +179,11 @@ function ChatWithMetadata() {
   // @ts-ignore
   const messages = context?.messages || [];
   
-  // Show empty state only if no threadId yet (truly fresh start)
-  const showEmptyState = !threadId;
+  // Show empty state only if no messages yet AND conversation hasn't started
+  const showEmptyState = messages.length === 0 && !conversationStarted;
   
   // Debug logging
-  console.log('[EnhancedChatInterface] threadId:', threadId, 'showEmptyState:', showEmptyState);
+  console.log('[EnhancedChatInterface] messages.length:', messages.length, 'conversationStarted:', conversationStarted, 'showEmptyState:', showEmptyState);
 
   return (
     <div className="flex flex-col h-full w-full">
