@@ -45,6 +45,6 @@ logs/
 *.log
 
 # conversation recordings (may contain sensitive data)
-conversations/
-conversations_saved/
+/conversations/
+/conversations_saved/
 
