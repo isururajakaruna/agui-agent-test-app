@@ -150,9 +150,6 @@ export default function SavedChatsList() {
 
       // Combine all invocations from all conversations
       const allInvocations = conversations.flat();
-
-      // Import the conversion utility
-      const { convertToEvalSet } = await import('@/lib/evalExport');
       
       // Create a combined eval set
       const evalSetId = Math.random().toString(36).substring(2, 10);
