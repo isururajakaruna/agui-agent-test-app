@@ -60,6 +60,14 @@ if lsof -Pi :$PORT -sTCP:LISTEN -t >/dev/null 2>&1; then
     sleep 1
 fi
 
+# Ensure required directories exist
+echo "📁 Ensuring required directories exist..."
+mkdir -p conversations
+mkdir -p conversations_saved
+mkdir -p logs
+echo "✅ Directories ready"
+echo ""
+
 # Check if valid production build exists (check for BUILD_ID file)
 if [ ! -f ".next/BUILD_ID" ]; then
     echo "📦 No valid production build found. Building application..."
