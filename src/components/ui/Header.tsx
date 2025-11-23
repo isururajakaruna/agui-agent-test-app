@@ -1,18 +1,17 @@
 "use client";
 
 import React, { useState } from "react";
-import { Bot, Menu } from "lucide-react";
+import { Bot } from "lucide-react";
 import { useSavedConversations } from "@/contexts/SavedConversationsContext";
-import { SaveConversationButton } from "@/components/conversations/SaveConversationButton";
+import SaveConversationButton from "@/components/conversations/SaveConversationButton";
 
 interface HeaderProps {
   sessionId?: string | null;
-  conversationId?: string | null;
 }
 
-export default function Header({ sessionId, conversationId }: HeaderProps) {
+export default function Header({ sessionId }: HeaderProps) {
   const [showTooltip, setShowTooltip] = useState(false);
-  const { setSidebarOpen, currentView } = useSavedConversations();
+  const { currentView } = useSavedConversations();
   
   // Get connection details from environment (dynamically configured)
   const bridgeUrl = process.env.NEXT_PUBLIC_ADK_BRIDGE_URL || process.env.ADK_BRIDGE_URL || "http://localhost:8000";
@@ -36,17 +35,6 @@ export default function Header({ sessionId, conversationId }: HeaderProps) {
     <header className="border-b bg-white dark:bg-gray-900 shadow-sm">
       <div className="px-6 py-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          {/* Menu button (only show in chat view) */}
-          {currentView === 'chat' && (
-            <button
-              onClick={() => setSidebarOpen(true)}
-              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-              title="Saved conversations"
-            >
-              <Menu className="w-5 h-5 text-gray-700 dark:text-gray-300" />
-            </button>
-          )}
-          
           <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg">
             <Bot className="w-5 h-5 text-gray-700 dark:text-gray-300" />
           </div>
@@ -57,7 +45,7 @@ export default function Header({ sessionId, conversationId }: HeaderProps) {
           </div>
         </div>
         <div className="flex items-center gap-4">
-          {/* Session ID with copy button (only show in chat view) */}
+          {/* Session ID with copy button (only show in chat view with active session) */}
           {currentView === 'chat' && sessionId && (
             <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-lg">
               <span className="font-mono hidden sm:inline">{sessionId}</span>
@@ -77,54 +65,56 @@ export default function Header({ sessionId, conversationId }: HeaderProps) {
             </div>
           )}
           
-          {/* Save button (only show in chat view) */}
-          {currentView === 'chat' && conversationId && (
-            <SaveConversationButton conversationId={conversationId} />
+          {/* Save button (only show in chat view with active session) */}
+          {currentView === 'chat' && sessionId && (
+            <SaveConversationButton conversationId={sessionId} />
           )}
-          {/* Connected status with tooltip */}
-          <div 
-            className="relative flex items-center gap-2 cursor-help"
-            onMouseEnter={() => setShowTooltip(true)}
-            onMouseLeave={() => setShowTooltip(false)}
-          >
-            <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-            <span className="text-sm text-gray-600 dark:text-gray-400">
-              Connected
-            </span>
-            
-            {/* Tooltip */}
-            {showTooltip && (
-              <div className="absolute top-full right-0 mt-2 bg-gray-900 text-white text-xs rounded-lg shadow-lg p-3 w-64 z-50">
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Bridge Host:</span>
-                    <span className="font-mono">{bridgeHost}</span>
+          
+          {/* Connected status with tooltip (only show in chat view) */}
+          {currentView === 'chat' && (
+            <div 
+              className="relative flex items-center gap-2 cursor-help"
+              onMouseEnter={() => setShowTooltip(true)}
+              onMouseLeave={() => setShowTooltip(false)}
+            >
+              <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+              <span className="text-sm text-gray-600 dark:text-gray-400">
+                Connected
+              </span>
+              
+              {/* Tooltip */}
+              {showTooltip && (
+                <div className="absolute top-full right-0 mt-2 bg-gray-900 text-white text-xs rounded-lg shadow-lg p-3 w-64 z-50">
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Bridge Host:</span>
+                      <span className="font-mono">{bridgeHost}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Port:</span>
+                      <span className="font-mono">{bridgePort}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Transport:</span>
+                      <span className="font-mono">{protocol.toUpperCase()}/SSE</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Protocol:</span>
+                      <span className="font-mono">AG-UI</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Status:</span>
+                      <span className="text-green-400 font-semibold">● Active</span>
+                    </div>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Port:</span>
-                    <span className="font-mono">{bridgePort}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Transport:</span>
-                    <span className="font-mono">{protocol.toUpperCase()}/SSE</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Protocol:</span>
-                    <span className="font-mono">AG-UI</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Status:</span>
-                    <span className="text-green-400 font-semibold">● Active</span>
-                  </div>
+                  {/* Tooltip arrow */}
+                  <div className="absolute -top-1 right-4 w-2 h-2 bg-gray-900 transform rotate-45"></div>
                 </div>
-                {/* Tooltip arrow */}
-                <div className="absolute -top-1 right-4 w-2 h-2 bg-gray-900 transform rotate-45"></div>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </header>
   );
 }
-

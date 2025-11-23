@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { CopilotChat } from "@copilotkit/react-ui";
 import { useCopilotAction, useCopilotContext } from "@copilotkit/react-core";
-import Header from "@/components/ui/Header";
 import GenericToolCard from "@/components/tools/GenericToolCard";
 import ThinkingCard from "@/components/cards/ThinkingCard";
 import ThinkingIndicator from "@/components/chat/ThinkingIndicator";
@@ -19,7 +18,7 @@ function ChatWithMetadata() {
   const [isAgentWorking, setIsAgentWorking] = useState(false);
   const [conversationStarted, setConversationStarted] = useState(false);
   const workingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const { setCurrentConversationId, currentView } = useSavedConversations();
+  const { setCurrentConversationId, setHasMessages, currentView } = useSavedConversations();
 
   // Extract thread ID from context and set it globally
   useEffect(() => {
@@ -164,28 +163,37 @@ function ChatWithMetadata() {
 
   // Track if conversation has started (once started, never show empty state again)
   useEffect(() => {
-    // @ts-ignore
-    const messages = context?.messages || [];
-    if (messages.length > 0 || isAgentWorking) {
+    // @ts-ignore - Check multiple possible locations for messages
+    const messages = context?.messages || context?.chatComponentsCache?.messages || [];
+    
+    // Update hasMessages state for Save button
+    setHasMessages(messages.length > 0);
+    
+    // Only hide empty state when we actually have messages
+    if (messages.length > 0) {
       setConversationStarted(true);
+      console.log('[EnhancedChatInterface] Conversation started - hiding empty state');
     }
-  }, [context, isAgentWorking]);
+  }, [context, setHasMessages]);
 
   // @ts-ignore
   const messages = context?.messages || [];
-  // Show empty state only if conversation never started
-  const showEmptyState = !conversationStarted;
+  
+  // Show empty state only if no threadId yet (truly fresh start)
+  const showEmptyState = !threadId;
+  
+  // Debug logging
+  console.log('[EnhancedChatInterface] threadId:', threadId, 'showEmptyState:', showEmptyState);
 
   return (
-    <div className="flex flex-col h-screen w-full">
-      <Header sessionId={threadId} conversationId={threadId} />
+    <div className="flex flex-col h-full w-full">
       <div className="flex-1 overflow-hidden p-4">
         <div className="h-full max-w-6xl mx-auto flex gap-4">
           {/* Main Chat Area */}
           <div className="flex-1 min-w-0 relative">
             {/* Empty State - shows when conversation hasn't started */}
             {showEmptyState && (
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
                 <div className="text-center space-y-3 mb-20">
                   <h2 className="text-3xl font-semibold text-gray-700 dark:text-gray-300">
                     How can I help you today?

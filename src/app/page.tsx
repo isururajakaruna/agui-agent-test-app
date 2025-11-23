@@ -3,40 +3,50 @@
 import { CopilotKit } from "@copilotkit/react-core";
 import EnhancedChatInterface from "@/components/chat/EnhancedChatInterface";
 import { SavedConversationsProvider, useSavedConversations } from "@/contexts/SavedConversationsContext";
-import { Sidebar } from "@/components/conversations/Sidebar";
+import { ToastProvider } from "@/contexts/ToastContext";
+import MainLayout from "@/components/layout/MainLayout";
+import SavedChatsList from "@/components/saved/SavedChatsList";
 import { SavedConversationView } from "@/components/conversations/SavedConversationView";
 
 function AppContent() {
-  const { currentView } = useSavedConversations();
+  const { currentView, viewingConversationId, currentConversationId } = useSavedConversations();
+
+  // Determine what to render based on view
+  const renderContent = () => {
+    if (currentView === 'saved') {
+      // If viewing a specific conversation, show the viewer
+      if (viewingConversationId) {
+        return <SavedConversationView />;
+      }
+      // Otherwise show the list
+      return <SavedChatsList />;
+    }
+    
+    // Chat view
+    return (
+      <CopilotKit
+        runtimeUrl="/api/copilotkit"
+        agent="chat_agent"
+        showDevConsole={process.env.NEXT_PUBLIC_SHOW_DEV_CONSOLE === "true"}
+      >
+        <EnhancedChatInterface />
+      </CopilotKit>
+    );
+  };
 
   return (
-    <>
-      {/* Sidebar */}
-      <Sidebar />
-
-      {/* Main Content */}
-      <main className="flex min-h-screen flex-col">
-        {currentView === 'saved-conversation' ? (
-          <SavedConversationView />
-        ) : (
-          <CopilotKit
-            runtimeUrl="/api/copilotkit"
-            agent="chat_agent"
-            showDevConsole={process.env.NEXT_PUBLIC_SHOW_DEV_CONSOLE === "true"}
-          >
-            <EnhancedChatInterface />
-          </CopilotKit>
-        )}
-      </main>
-    </>
+    <MainLayout sessionId={currentView === 'chat' ? currentConversationId : null}>
+      {renderContent()}
+    </MainLayout>
   );
 }
 
 export default function Home() {
   return (
-    <SavedConversationsProvider>
-      <AppContent />
-    </SavedConversationsProvider>
+    <ToastProvider>
+      <SavedConversationsProvider>
+        <AppContent />
+      </SavedConversationsProvider>
+    </ToastProvider>
   );
 }
-

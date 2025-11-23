@@ -114,3 +114,4 @@ workingTimeoutRef.current = setTimeout(() => {
 - The 800ms timeout prevents flickering when transitioning between states
 - The `pointer-events-none` ensures users can still interact with the UI behind the indicator
 
+

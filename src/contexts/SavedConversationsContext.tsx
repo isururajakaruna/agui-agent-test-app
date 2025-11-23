@@ -11,12 +11,11 @@ export interface SavedConversation {
 }
 
 interface SavedConversationsContextType {
-  // Sidebar
-  isSidebarOpen: boolean;
-  setSidebarOpen: (open: boolean) => void;
+  // Navigation
+  currentView: 'chat' | 'saved';
+  setCurrentView: (view: 'chat' | 'saved') => void;
   
-  // Current view
-  currentView: 'chat' | 'saved-conversation';
+  // Viewing specific saved conversation
   viewingConversationId: string | null;
   setViewingConversation: (id: string | null) => void;
   
@@ -28,16 +27,18 @@ interface SavedConversationsContextType {
   // Current session
   currentConversationId: string | null;
   setCurrentConversationId: (id: string | null) => void;
+  hasMessages: boolean;
+  setHasMessages: (has: boolean) => void;
 }
 
 const SavedConversationsContext = createContext<SavedConversationsContextType | undefined>(undefined);
 
 export function SavedConversationsProvider({ children }: { children: React.ReactNode }) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [currentView, setCurrentView] = useState<'chat' | 'saved-conversation'>('chat');
+  const [currentView, setCurrentViewState] = useState<'chat' | 'saved'>('chat');
   const [viewingConversationId, setViewingConversationIdState] = useState<string | null>(null);
   const [savedConversations, setSavedConversations] = useState<SavedConversation[]>([]);
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
+  const [hasMessages, setHasMessages] = useState<boolean>(false);
 
   const fetchSavedConversations = useCallback(async () => {
     try {
@@ -56,24 +57,30 @@ export function SavedConversationsProvider({ children }: { children: React.React
 
   const setViewingConversation = useCallback((id: string | null) => {
     setViewingConversationIdState(id);
-    setCurrentView(id ? 'saved-conversation' : 'chat');
+    // When viewing a specific conversation, stay in saved view
+    if (id) {
+      setCurrentViewState('saved');
+    }
   }, []);
 
-  const setSidebarOpen = useCallback((open: boolean) => {
-    setIsSidebarOpen(open);
+  const setCurrentView = useCallback((view: 'chat' | 'saved') => {
+    setCurrentViewState(view);
     
-    // Fetch conversations when opening sidebar
-    if (open) {
+    // Fetch conversations when navigating to saved view
+    if (view === 'saved') {
       fetchSavedConversations();
+      // Clear viewing conversation when going to list view
+      if (viewingConversationId) {
+        setViewingConversationIdState(null);
+      }
     }
-  }, [fetchSavedConversations]);
+  }, [fetchSavedConversations, viewingConversationId]);
 
   return (
     <SavedConversationsContext.Provider
       value={{
-        isSidebarOpen,
-        setSidebarOpen,
         currentView,
+        setCurrentView,
         viewingConversationId,
         setViewingConversation,
         savedConversations,
@@ -81,6 +88,8 @@ export function SavedConversationsProvider({ children }: { children: React.React
         refreshSavedConversations,
         currentConversationId,
         setCurrentConversationId,
+        hasMessages,
+        setHasMessages,
       }}
     >
       {children}
@@ -95,4 +104,3 @@ export function useSavedConversations() {
   }
   return context;
 }
-

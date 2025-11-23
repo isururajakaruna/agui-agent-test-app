@@ -31,6 +31,7 @@ interface EvalSet {
 /**
  * Convert a single conversation to ADK eval case format
  * Preserves intermediate_data.invocation_events when present
+ * Filters out "thinking" tool calls as they're not part of actual trajectory
  */
 export function conversationToEvalCase(
   conversationId: string,
@@ -39,14 +40,35 @@ export function conversationToEvalCase(
   userId: string = "user"
 ): EvalCase {
   // Keep intermediate_data as-is (with invocation_events if they exist)
-  // If invocation_events is empty array, it becomes empty object
+  // Filter out "thinking" tool calls as they're internal reasoning, not actual tool calls
   const cleanedConversation = conversation.map(inv => {
     const events = inv.intermediate_data?.invocation_events;
+    
+    if (events && events.length > 0) {
+      // Filter out thinking tool calls
+      const filteredEvents = events.filter((event: any) => {
+        // Check if this event contains a thinking tool call
+        if (event.content?.parts) {
+          for (const part of event.content.parts) {
+            if (part.function_call?.name === 'thinking') {
+              return false; // Skip thinking tool calls
+            }
+          }
+        }
+        return true; // Keep all other events
+      });
+      
+      return {
+        ...inv,
+        intermediate_data: filteredEvents.length > 0
+          ? { invocation_events: filteredEvents }
+          : {}  // Empty object if no real tool calls
+      };
+    }
+    
     return {
       ...inv,
-      intermediate_data: (events && events.length > 0) 
-        ? { invocation_events: events }  // Keep events if present
-        : {}  // Empty object if no events
+      intermediate_data: {}  // Empty object if no events
     };
   });
   
