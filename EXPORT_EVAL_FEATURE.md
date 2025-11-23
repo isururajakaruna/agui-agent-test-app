@@ -13,6 +13,73 @@ A comprehensive utility library that handles:
 - **Metadata**: Adds required ADK eval metadata (eval_id, session_input, timestamps)
 
 ### 2. ADK Eval Format Structure
+
+## 🎯 **Key Structural Fixes (Level by Level)**
+
+### **Level 0: Top Level** ✅ FIXED
+**Before:**
+```json
+{
+  "eval_id": "conversation-uuid",
+  "conversation": [...],
+  "session_input": {...},
+  "creation_timestamp": ...
+}
+```
+
+**After (Correct ADK Format):**
+```json
+{
+  "eval_set_id": "dbefabce",
+  "name": "dbefabce",
+  "eval_cases": [
+    {
+      "eval_id": "conversation-uuid",
+      "conversation": [...],
+      "session_input": {...},
+      "creation_timestamp": ...
+    }
+  ],
+  "creation_timestamp": ...
+}
+```
+
+### **Level 1: Eval Case** ✅ CORRECT
+- `eval_id`: Conversation UUID
+- `conversation`: Array of invocations
+- `session_input`: App metadata
+- `creation_timestamp`: Unix timestamp
+
+### **Level 2: Invocation** ✅ FIXED
+**Before:**
+```json
+{
+  "invocation_id": "...",
+  "user_content": {...},
+  "final_response": {...},
+  "intermediate_data": {
+    "invocation_events": [...]  // ❌ Should NOT be here in eval format
+  },
+  "creation_timestamp": ...
+}
+```
+
+**After (Correct):**
+```json
+{
+  "invocation_id": "...",
+  "user_content": {...},
+  "final_response": {...},
+  "intermediate_data": {},  // ✅ Empty object
+  "creation_timestamp": ...
+}
+```
+
+**Why?** The eval format is for **input/output pairs only**. The `invocation_events` (tool calls, thinking, etc.) are internal execution details, not part of the eval specification.
+
+---
+
+### Original ADK Eval Format Structure
 The exported files follow the ADK eval structure from `eval-reference-evalset.json`:
 
 ```json

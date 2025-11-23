@@ -7,7 +7,7 @@ interface Invocation {
   invocation_id: string;
   user_content: any;
   final_response: any;
-  intermediate_data: any;
+  intermediate_data: any;  // Should be empty object {} at top level, not contain invocation_events
   creation_timestamp: number;
 }
 
@@ -30,16 +30,24 @@ interface EvalSet {
 
 /**
  * Convert a single conversation to ADK eval case format
+ * NOTE: intermediate_data.invocation_events are REMOVED in eval structure
+ * Only user_content, final_response remain
  */
 export function conversationToEvalCase(
   conversationId: string,
   conversation: Invocation[],
   appName: string = "agent_ui",
-  userId: string = "default-user"
+  userId: string = "user"  // Changed default from "default-user" to "user"
 ): EvalCase {
+  // Clean up conversation: remove invocation_events from intermediate_data
+  const cleanedConversation = conversation.map(inv => ({
+    ...inv,
+    intermediate_data: {}  // Empty object, not with invocation_events
+  }));
+  
   return {
     eval_id: conversationId,
-    conversation,
+    conversation: cleanedConversation,
     session_input: {
       app_name: appName,
       user_id: userId,
@@ -49,7 +57,20 @@ export function conversationToEvalCase(
 }
 
 /**
- * Download a conversation as an eval case JSON file
+ * Generate a random 8-character alphanumeric eval set ID
+ */
+function generateEvalSetId(): string {
+  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  for (let i = 0; i < 8; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+}
+
+/**
+ * Download a conversation as an eval set JSON file (ADK format)
+ * Wraps single conversation in an eval_set structure
  */
 export function downloadConversationAsEval(
   conversationId: string,
@@ -57,19 +78,47 @@ export function downloadConversationAsEval(
   appName?: string,
   userId?: string
 ) {
-  const evalCase = conversationToEvalCase(conversationId, conversation, appName, userId);
+  console.log('[evalExport] Starting download for:', conversationId);
+  console.log('[evalExport] Conversation data:', conversation);
   
-  const jsonString = JSON.stringify(evalCase, null, 2);
+  // Create eval case from conversation
+  const evalCase = conversationToEvalCase(conversationId, conversation, appName, userId);
+  console.log('[evalExport] Eval case created:', evalCase);
+  
+  // Generate random 8-digit eval set ID
+  const evalSetId = generateEvalSetId();
+  
+  // Wrap in eval set structure (CRITICAL: must be an eval_set, not eval_case directly)
+  const evalSet: EvalSet = {
+    eval_set_id: evalSetId,
+    name: evalSetId,  // Same as eval_set_id
+    eval_cases: [evalCase],  // Array with single case
+    creation_timestamp: Date.now() / 1000,
+  };
+  
+  console.log('[evalExport] Eval set created with ID:', evalSetId);
+  
+  const jsonString = JSON.stringify(evalSet, null, 2);
+  console.log('[evalExport] JSON string length:', jsonString.length);
+  
   const blob = new Blob([jsonString], { type: 'application/json' });
+  console.log('[evalExport] Blob created:', blob.size, 'bytes');
+  
   const url = URL.createObjectURL(blob);
+  console.log('[evalExport] Blob URL created:', url);
   
   const link = document.createElement('a');
   link.href = url;
-  link.download = `${conversationId}.eval.json`;
+  link.download = `${evalSetId}.evalset.json`;  // Filename matches eval_set_id
+  console.log('[evalExport] Download link created:', link.download);
+  
   document.body.appendChild(link);
   link.click();
+  console.log('[evalExport] Link clicked');
+  
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
+  console.log('[evalExport] Cleanup complete');
 }
 
 /**

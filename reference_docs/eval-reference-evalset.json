@@ -23,48 +23,6 @@
             ],
             "role": "model"
           },
-          "intermediate_data": {},
-          "creation_timestamp": 1763829448.935758
-        },
-        {
-          "invocation_id": "e-b02e1f58-2b0a-4329-a865-b45aa638692d",
-          "user_content": {
-            "parts": [
-              {
-                "text": "what can you do"
-              }
-            ],
-            "role": "user"
-          },
-          "final_response": {
-            "parts": [
-              {
-                "text": "I can help you with a few things related to mathematics:\n\n*   **Calculate sine values:** If you give me an angle in degrees, I can tell you its sine.\n*   **Find prime numbers:** I can find the *n*th prime number for you.\n*   **Generate Fibonacci sequences:** I can generate a Fibonacci sequence of a specified length, and you can even customize the starting numbers.\n\nWhat would you like to do?\n"
-              }
-            ],
-            "role": "model"
-          },
-          "intermediate_data": {},
-          "creation_timestamp": 1763829454.348442
-        },
-        {
-          "invocation_id": "e-310766fa-acc9-46e3-9e3b-c41bae374d65",
-          "user_content": {
-            "parts": [
-              {
-                "text": "calculate 10th prime number"
-              }
-            ],
-            "role": "user"
-          },
-          "final_response": {
-            "parts": [
-              {
-                "text": "The 10th prime number is 29.\n"
-              }
-            ],
-            "role": "model"
-          },
           "intermediate_data": {
             "invocation_events": [
               {
@@ -104,7 +62,7 @@
               }
             ]
           },
-          "creation_timestamp": 1763829465.399381
+          "creation_timestamp": 1763829448.935758
         }
       ],
       "session_input": {
@@ -112,117 +70,6 @@
         "user_id": "user"
       },
       "creation_timestamp": 1763829887.8482492
-    },
-    {
-      "eval_id": "case15f662",
-      "conversation": [
-        {
-          "invocation_id": "e-92057f23-6f53-407c-b067-b3251d1f776a",
-          "user_content": {
-            "parts": [
-              {
-                "text": "hi"
-              }
-            ],
-            "role": "user"
-          },
-          "final_response": {
-            "parts": [
-              {
-                "text": "Hello! How can I help you today?.\nI can help you calculate sin values, prime values or Fibonacci sequences\n"
-              }
-            ],
-            "role": "model"
-          },
-          "intermediate_data": {},
-          "creation_timestamp": 1763829448.935758
-        },
-        {
-          "invocation_id": "e-b02e1f58-2b0a-4329-a865-b45aa638692d",
-          "user_content": {
-            "parts": [
-              {
-                "text": "what can you do"
-              }
-            ],
-            "role": "user"
-          },
-          "final_response": {
-            "parts": [
-              {
-                "text": "I can help you with a few things related to mathematics:\n\n*   **Calculate sine values:** If you give me an angle in degrees, I can tell you its sine.\n*   **Find prime numbers:** I can find the *n*th prime number for you.\n*   **Generate Fibonacci sequences:** I can generate a Fibonacci sequence of a specified length, and you can even customize the starting numbers.\n\nWhat would you like to do?\n"
-              }
-            ],
-            "role": "model"
-          },
-          "intermediate_data": {},
-          "creation_timestamp": 1763829454.348442
-        },
-        {
-          "invocation_id": "e-310766fa-acc9-46e3-9e3b-c41bae374d65",
-          "user_content": {
-            "parts": [
-              {
-                "text": "calculate 10th prime number"
-              }
-            ],
-            "role": "user"
-          },
-          "final_response": {
-            "parts": [
-              {
-                "text": "The 10th prime number is 29.\n"
-              }
-            ],
-            "role": "model"
-          },
-          "intermediate_data": {
-            "invocation_events": [
-              {
-                "author": "root_agent",
-                "content": {
-                  "parts": [
-                    {
-                      "function_call": {
-                        "id": "adk-de42cb4d-106c-44a3-bc6e-223d7b10029f",
-                        "args": {
-                          "n": 10
-                        },
-                        "name": "find_nth_prime"
-                      },
-                      "thought_signature": "CrQCAdHtim_uitBeGEC_2Ff5OtqX3uauPxnHZ4r-sUwy3A45WrWqxx_A6LYiF8SY8IXiWllShY8Q9ASeAKPI5Rz-m9V-hlg4gE4uu7avPn1ITFbTUBfR_IbuX87NPpBWQQ8B1B-YnBLVUFpg06PWzD4CciadgvNVym9jnZp4mQ8V9Tjyrwa0qUdCHGu6HH4KbX31oSsjVw78yEg_9KspQZxAEKJc1I7bOw_ZxrDtMF32A-S4ord1LpRkmwYMvBG3XOFH1qdqyP09z1aHNgJktpYvN6AtLO0ua9k0Ca3KHkEBqkWPtMU16MxwuZy0gBOGnEQwjx9B8XPyHet-B6Mtn1aS0vPjpVqujIp2MO-Yx_7oXIZveIMrKqfTY6nk_BjMdCAIEuvB-K_J78Y9yVziO7CufP346II="
-                    }
-                  ],
-                  "role": "model"
-                }
-              },
-              {
-                "author": "root_agent",
-                "content": {
-                  "parts": [
-                    {
-                      "function_response": {
-                        "id": "adk-de42cb4d-106c-44a3-bc6e-223d7b10029f",
-                        "name": "find_nth_prime",
-                        "response": {
-                          "result": 29
-                        }
-                      }
-                    }
-                  ],
-                  "role": "user"
-                }
-              }
-            ]
-          },
-          "creation_timestamp": 1763829465.399381
-        }
-      ],
-      "session_input": {
-        "app_name": "agent1",
-        "user_id": "user"
-      },
-      "creation_timestamp": 1763829947.579218
     }
   ],
   "creation_timestamp": 1763829881.18698
