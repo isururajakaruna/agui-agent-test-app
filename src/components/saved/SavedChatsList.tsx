@@ -15,9 +15,15 @@ export default function SavedChatsList() {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [isCombining, setIsCombining] = useState(false);
   const [isSelectionMode, setIsSelectionMode] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // Add loading state
 
   useEffect(() => {
-    fetchSavedConversations();
+    const loadConversations = async () => {
+      setIsLoading(true);
+      await fetchSavedConversations();
+      setIsLoading(false);
+    };
+    loadConversations();
   }, [fetchSavedConversations]);
 
   // Filter conversations by search query
@@ -190,7 +196,16 @@ export default function SavedChatsList() {
 
   return (
     <div className="h-full bg-gray-50 dark:bg-gray-900">
-      <div className="max-w-7xl mx-auto p-6">
+      {/* Loading Screen */}
+      {isLoading ? (
+        <div className="flex items-center justify-center h-full">
+          <div className="text-center space-y-4">
+            <Loader2 className="w-12 h-12 animate-spin text-blue-600 mx-auto" />
+            <p className="text-lg text-gray-600 dark:text-gray-400">Loading saved conversations...</p>
+          </div>
+        </div>
+      ) : (
+        <div className="max-w-7xl mx-auto p-6">
         {/* Header */}
         <div className="mb-6 flex items-center justify-between">
           <div>
@@ -336,6 +351,7 @@ export default function SavedChatsList() {
           </div>
         )}
       </div>
+      )}
     </div>
   );
 }
