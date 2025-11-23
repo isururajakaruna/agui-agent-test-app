@@ -30,20 +30,25 @@ interface EvalSet {
 
 /**
  * Convert a single conversation to ADK eval case format
- * NOTE: intermediate_data.invocation_events are REMOVED in eval structure
- * Only user_content, final_response remain
+ * Preserves intermediate_data.invocation_events when present
  */
 export function conversationToEvalCase(
   conversationId: string,
   conversation: Invocation[],
   appName: string = "agent_ui",
-  userId: string = "user"  // Changed default from "default-user" to "user"
+  userId: string = "user"
 ): EvalCase {
-  // Clean up conversation: remove invocation_events from intermediate_data
-  const cleanedConversation = conversation.map(inv => ({
-    ...inv,
-    intermediate_data: {}  // Empty object, not with invocation_events
-  }));
+  // Keep intermediate_data as-is (with invocation_events if they exist)
+  // If invocation_events is empty array, it becomes empty object
+  const cleanedConversation = conversation.map(inv => {
+    const events = inv.intermediate_data?.invocation_events;
+    return {
+      ...inv,
+      intermediate_data: (events && events.length > 0) 
+        ? { invocation_events: events }  // Keep events if present
+        : {}  // Empty object if no events
+    };
+  });
   
   return {
     eval_id: conversationId,

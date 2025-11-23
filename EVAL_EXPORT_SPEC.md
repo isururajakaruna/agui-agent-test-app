@@ -37,10 +37,42 @@
     "parts": [{"text": "..."}],
     "role": "model"
   },
-  "intermediate_data": {},  // ✅ Empty object (no invocation_events)
+  "intermediate_data": {
+    "invocation_events": [  // ✅ Present if tool calls/thinking occurred
+      {
+        "author": "agent_name",
+        "content": {
+          "parts": [{
+            "function_call": {
+              "id": "tool-id",
+              "args": {...},
+              "name": "tool_name"
+            },
+            "thought_signature": "..."  // Optional, for thinking
+          }],
+          "role": "model"
+        }
+      },
+      {
+        "author": "agent_name",
+        "content": {
+          "parts": [{
+            "function_response": {
+              "id": "tool-id",
+              "name": "tool_name",
+              "response": {...}
+            }
+          }],
+          "role": "user"
+        }
+      }
+    ]
+  },
   "creation_timestamp": 1234567890.123
 }
 ```
+
+**Note:** If no tool calls occurred, `intermediate_data` is an empty object `{}`
 
 ## 📦 **File Naming:**
 - Filename: `<eval_set_id>.evalset.json`
@@ -59,13 +91,18 @@
    - NOT `"default-user"`
 
 3. **intermediate_data:**
-   - Always an empty object `{}`
-   - `invocation_events` are stripped out (internal execution details)
+   - Contains `invocation_events` array if tool calls/thinking occurred
+   - Empty object `{}` if no intermediate steps
+   - Each `invocation_event` has:
+     - `author`: Agent name that made the call
+     - `content.parts`: Array with `function_call` or `function_response`
+     - `content.role`: "model" for calls, "user" for responses
+     - `thought_signature`: Optional, present for thinking steps
 
 4. **Eval format purpose:**
    - Input/output pairs for evaluation
    - User queries + Agent responses
-   - No internal execution traces
+   - **Includes intermediate execution traces** (tool calls, thinking) for full context
 
 ## ✅ **Validation:**
 All levels verified against ADK reference:
