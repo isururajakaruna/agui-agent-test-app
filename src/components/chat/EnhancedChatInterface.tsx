@@ -169,18 +169,18 @@ function ChatWithMetadata() {
     // Update hasMessages state for Save button
     setHasMessages(messages.length > 0);
     
-    // Only hide empty state when we actually have messages
-    if (messages.length > 0) {
+    // Mark conversation as started if there are messages OR agent is working
+    if (messages.length > 0 || isAgentWorking) {
       setConversationStarted(true);
       console.log('[EnhancedChatInterface] Conversation started - hiding empty state');
     }
-  }, [context, setHasMessages]);
+  }, [context, isAgentWorking, setHasMessages]);
 
   // @ts-ignore
   const messages = context?.messages || [];
   
-  // Show empty state only if no messages yet AND conversation hasn't started
-  const showEmptyState = messages.length === 0 && !conversationStarted;
+  // Show empty state only if conversation has never started
+  const showEmptyState = !conversationStarted;
   
   // Debug logging
   console.log('[EnhancedChatInterface] messages.length:', messages.length, 'conversationStarted:', conversationStarted, 'showEmptyState:', showEmptyState);
