@@ -73,10 +73,10 @@ class ADKAgent extends HttpAgent {
         break;
       
       case 'RUN_FINISHED':
-        // Complete current invocation and save session
-        logger.log(`[recordEvent] RUN_FINISHED - completing and saving session`);
+        // Complete current invocation (but don't save session yet - wait for explicit save)
+        logger.log(`[recordEvent] RUN_FINISHED - completing invocation`);
         recorder.completeInvocation();
-        recorder.saveSession();
+        // Note: saveSession() is called explicitly via /api/conversations/save endpoint
         break;
     }
   }

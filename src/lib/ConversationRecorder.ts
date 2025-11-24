@@ -263,6 +263,7 @@ class ConversationRecorder {
 
   /**
    * Complete current invocation and add to conversation
+   * Also saves to file to persist multi-turn conversations
    */
   completeInvocation() {
     if (!this.currentInvocation || !this.currentConversationId) return;
@@ -277,6 +278,9 @@ class ConversationRecorder {
 
       this.currentConversation.push(this.currentInvocation);
       console.log(`[ConversationRecorder] Completed invocation: ${this.currentInvocation.invocation_id}`);
+      
+      // Save to file immediately to persist multi-turn conversations
+      this.saveToFile();
     }
 
     this.currentInvocation = null;
@@ -284,7 +288,27 @@ class ConversationRecorder {
   }
 
   /**
+   * Save current conversation to file (without clearing state)
+   */
+  private saveToFile() {
+    if (!this.currentConversationId || this.currentConversation.length === 0) {
+      return;
+    }
+
+    const filename = `${this.currentConversationId}.json`;
+    const filepath = path.join(this.conversationsDir, filename);
+
+    try {
+      fs.writeFileSync(filepath, JSON.stringify(this.currentConversation, null, 2), 'utf-8');
+      console.log(`[ConversationRecorder] 💾 Saved ${this.currentConversation.length} invocation(s) to: ${filepath}`);
+    } catch (error) {
+      console.error(`[ConversationRecorder] ❌ Failed to save conversation:`, error);
+    }
+  }
+
+  /**
    * Save the current conversation to a JSON file (just the conversation array)
+   * Note: This is now called incrementally after each invocation, so no need to clear state
    */
   saveSession() {
     if (!this.currentConversationId) {
@@ -297,21 +321,13 @@ class ConversationRecorder {
       this.completeInvocation();
     }
 
-    const filename = `${this.currentConversationId}.json`;
-    const filepath = path.join(this.conversationsDir, filename);
-
-    try {
-      // Save just the conversation array (not wrapped in eval structure)
-      fs.writeFileSync(filepath, JSON.stringify(this.currentConversation, null, 2), 'utf-8');
-      console.log(`[ConversationRecorder] ✅ Saved conversation: ${filepath}`);
-      console.log(`[ConversationRecorder] Total invocations: ${this.currentConversation.length}`);
-    } catch (error) {
-      console.error(`[ConversationRecorder] ❌ Failed to save conversation:`, error);
-    }
-
-    // Clear after saving
-    this.currentConversationId = null;
-    this.currentConversation = [];
+    // Save to file (already done incrementally, but call again to be sure)
+    this.saveToFile();
+    
+    console.log(`[ConversationRecorder] ✅ Session saved with ${this.currentConversation.length} invocation(s)`);
+    
+    // Note: We DON'T clear currentConversationId or currentConversation here anymore
+    // This allows multi-turn conversations to accumulate
   }
 }
 
