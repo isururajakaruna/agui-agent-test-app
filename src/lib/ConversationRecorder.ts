@@ -68,13 +68,16 @@ class ConversationRecorder {
    * Start a new conversation session
    */
   startSession(threadId: string, runId: string) {
-    // Use the thread ID directly as the conversation ID
-    // This ensures the frontend session ID matches the saved filename
-    this.currentConversationId = threadId;
-    this.currentConversation = [];
-    this.pendingEvents = [];
-    
-    console.log(`[ConversationRecorder] Started conversation: ${threadId}`);
+    // Only clear conversation if this is a NEW session (different threadId)
+    // This allows multi-turn conversations to accumulate
+    if (this.currentConversationId !== threadId) {
+      console.log(`[ConversationRecorder] Starting NEW conversation: ${threadId}`);
+      this.currentConversationId = threadId;
+      this.currentConversation = [];
+      this.pendingEvents = [];
+    } else {
+      console.log(`[ConversationRecorder] Continuing existing conversation: ${threadId}`);
+    }
   }
 
   /**
