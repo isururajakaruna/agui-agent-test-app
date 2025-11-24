@@ -261,6 +261,16 @@ function ChatWithMetadata() {
     ),
   });
 
+  // Research tools
+  useCopilotAction({
+    name: "external_research_agent",
+    available: "disabled",
+    parameters: [],
+    render: ({ args, result, status }) => (
+      <GenericToolCard toolName="external_research_agent" args={args} result={result} status={status} />
+    ),
+  });
+
   // Session stats card removed - not needed for UI
 
   // Track if conversation has started (once started, never show empty state again)
