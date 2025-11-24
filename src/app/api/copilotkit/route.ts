@@ -92,8 +92,10 @@ class ADKAgent extends HttpAgent {
     recorder.startSession(threadId, runId);
 
     // Extract and log user message from input.messages
+    // IMPORTANT: Get the LAST user message, as CopilotKit sends the entire history
     const messages = input.messages || [];
-    const userMessage = messages.find((m: any) => m.role === 'user');
+    const userMessages = messages.filter((m: any) => m.role === 'user');
+    const userMessage = userMessages[userMessages.length - 1]; // Get the most recent user message
     
     if (userMessage) {
       const content = typeof userMessage.content === 'string' 
@@ -106,6 +108,8 @@ class ADKAgent extends HttpAgent {
       logger.log(`   Run ID: ${runId}`);
       logger.log(`   Message ID: ${userMessage.id || 'unknown'}`);
       logger.log(`   Content: ${content}`);
+      logger.log(`   Total messages in history: ${messages.length}`);
+      logger.log(`   Total user messages: ${userMessages.length}`);
       logger.log(`   Full Message Object: ${JSON.stringify(userMessage)}`);
       logger.log('='.repeat(80));
       logger.log('');
