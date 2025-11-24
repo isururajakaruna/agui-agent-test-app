@@ -151,12 +151,114 @@ function ChatWithMetadata() {
     ),
   });
 
-  // Register custom renderer for thinking_step (ACTIVITY_SNAPSHOT with THINKING)
+  // Register custom renderer for thinking_step
   useCopilotAction({
     name: "thinking_step",
     available: "disabled",
     parameters: [],
     render: ({ args }) => <ThinkingCard args={args} />,
+  });
+
+  // Database tools
+  useCopilotAction({
+    name: "list_database_tables",
+    available: "disabled",
+    parameters: [],
+    render: ({ args, result, status }) => (
+      <GenericToolCard toolName="list_database_tables" args={args} result={result} status={status} />
+    ),
+  });
+
+  useCopilotAction({
+    name: "get_table_schema",
+    available: "disabled",
+    parameters: [],
+    render: ({ args, result, status }) => (
+      <GenericToolCard toolName="get_table_schema" args={args} result={result} status={status} />
+    ),
+  });
+
+  useCopilotAction({
+    name: "execute_sql_query",
+    available: "disabled",
+    parameters: [],
+    render: ({ args, result, status }) => (
+      <GenericToolCard toolName="execute_sql_query" args={args} result={result} status={status} />
+    ),
+  });
+
+  // Product tools
+  useCopilotAction({
+    name: "get_product_catalog",
+    available: "disabled",
+    parameters: [],
+    render: ({ args, result, status }) => (
+      <GenericToolCard toolName="get_product_catalog" args={args} result={result} status={status} />
+    ),
+  });
+
+  useCopilotAction({
+    name: "search_products",
+    available: "disabled",
+    parameters: [],
+    render: ({ args, result, status }) => (
+      <GenericToolCard toolName="search_products" args={args} result={result} status={status} />
+    ),
+  });
+
+  useCopilotAction({
+    name: "get_product_details",
+    available: "disabled",
+    parameters: [],
+    render: ({ args, result, status }) => (
+      <GenericToolCard toolName="get_product_details" args={args} result={result} status={status} />
+    ),
+  });
+
+  useCopilotAction({
+    name: "filter_products",
+    available: "disabled",
+    parameters: [],
+    render: ({ args, result, status }) => (
+      <GenericToolCard toolName="filter_products" args={args} result={result} status={status} />
+    ),
+  });
+
+  // Market tools
+  useCopilotAction({
+    name: "get_currency_pairs",
+    available: "disabled",
+    parameters: [],
+    render: ({ args, result, status }) => (
+      <GenericToolCard toolName="get_currency_pairs" args={args} result={result} status={status} />
+    ),
+  });
+
+  useCopilotAction({
+    name: "get_strategist_views",
+    available: "disabled",
+    parameters: [],
+    render: ({ args, result, status }) => (
+      <GenericToolCard toolName="get_strategist_views" args={args} result={result} status={status} />
+    ),
+  });
+
+  useCopilotAction({
+    name: "get_market_insights",
+    available: "disabled",
+    parameters: [],
+    render: ({ args, result, status }) => (
+      <GenericToolCard toolName="get_market_insights" args={args} result={result} status={status} />
+    ),
+  });
+
+  useCopilotAction({
+    name: "search_insights",
+    available: "disabled",
+    parameters: [],
+    render: ({ args, result, status }) => (
+      <GenericToolCard toolName="search_insights" args={args} result={result} status={status} />
+    ),
   });
 
   // Session stats card removed - not needed for UI
